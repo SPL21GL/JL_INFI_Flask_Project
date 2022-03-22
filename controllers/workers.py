@@ -5,8 +5,6 @@ import sqlalchemy
 from models import db, Mitarbeiter
 
 
-#from models import db  verfollständigen
-
 workers_blueprint = Blueprint('workers_blueprint', __name__)
 
 
@@ -15,5 +13,6 @@ def workers():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
 
 
-    workers = session.query(Mitarbeiter).all() #[1,2,3,4,5]
-    return render_template("workers.html", worker = workers)
+
+    workers = session.query(Mitarbeiter).all()
+    return render_template("workers.html", workers = workers)

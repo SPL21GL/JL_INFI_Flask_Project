@@ -5,8 +5,6 @@ import sqlalchemy
 from models import db, Abteilung
 
 
-#from models import db  verfollständigen
-
 compartments_blueprint = Blueprint('compartments_blueprint', __name__)
 
 
