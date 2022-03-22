@@ -18,7 +18,7 @@ Gebäude int not null
 create table if not exists Mitarbeiter
 (
 MitarbeiterID int auto_increment unique primary key,
-Voname varchar(32) not null,
+Vorname varchar(32) not null,
 Nachname varchar(32),
 Lohn int not null,
 Adresse varchar(64),
