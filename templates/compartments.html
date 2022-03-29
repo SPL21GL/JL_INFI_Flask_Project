@@ -18,6 +18,11 @@
       </tr>
       </thead>
       <tbody>
+        <tr>
+          <td id="addButtons" colspan="4" class="bg-light" onclick="window.location.href='/addCompartmentsForm'">
+            ➕
+          </td>
+        </tr>
         {%for compartment in compartments:%}
           <tr>
             <td scope = "row">{{compartment.AbteilungsID}}</td>

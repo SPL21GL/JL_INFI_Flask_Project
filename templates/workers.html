@@ -22,6 +22,11 @@
       </tr>
       </thead>
       <tbody>
+        <tr>
+          <td id="addButtons" colspan="8" class="bg-light" onclick="window.location.href='/addWorkersForm'">
+            ➕
+          </td>
+        </tr>
         {%for worker in workers:%}
           <tr>
             <td scope = "row">{{worker.MitarbeiterID}}</td>

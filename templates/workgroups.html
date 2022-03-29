@@ -18,6 +18,11 @@
       </tr>
       </thead>
       <tbody>
+        <tr>
+          <td id="addButtons" colspan="4" class="bg-light" onclick="window.location.href='/addWorkgroupsForm'">
+            ➕
+          </td>
+        </tr>
         {%for workgroup in workgroups:%}
           <tr>
             <td scope = "row">{{workgroup.ArbeitsgruppenID}}</td>

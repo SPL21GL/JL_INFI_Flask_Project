@@ -16,3 +16,6 @@ def compartment():
 
     compartments = session.query(Abteilung).all()
     return render_template("compartments.html", compartments = compartments)
+@compartments_blueprint.route("/addCompartmentsForm", methods=["get"])
+def platzhalter():
+    print("noch eintragen")
