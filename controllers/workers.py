@@ -21,8 +21,10 @@ def workers():
 def showAddForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
     addWorkersFormObject = addWorkersForm()
+    print("0")
 
     if addWorkersFormObject.validate_on_submit():
+        print("1")
         
         WorkerObjekt = Mitarbeiter()
         WorkerObjekt.Voname = addWorkersFormObject.Voname.data
@@ -30,11 +32,14 @@ def showAddForm():
         WorkerObjekt.Lohn = addWorkersFormObject.Lohn.data
         WorkerObjekt.Adresse = addWorkersFormObject.Adresse.data
         WorkerObjekt.Beschäftigung = addWorkersFormObject.Beschäftigung.data
-        WorkerObjekt.Geburtsdatum = addWorkersForm.Geburtsdatum.data
-
+        WorkerObjekt.Geburtsdatum = addWorkersFormObject.Geburtsdatum.data
+        print("2")  
         session.add(WorkerObjekt)
+        print("3")
         session.commit()
+        print("commited")
 
-        redirect("/workers")
+        redirect("/")
+        print("why?")
 
     return render_template("addWorkers.html",  form=addWorkersFormObject)
