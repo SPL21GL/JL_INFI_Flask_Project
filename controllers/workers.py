@@ -5,26 +5,26 @@ import sqlalchemy
 from models import db, Mitarbeiter
 from forms.AddForms.addWorkersForm import addWorkersForm
 
-
+ROWS_PER_PAGE = 5
 workers_blueprint = Blueprint('workers_blueprint', __name__)
+add_workers_blueprint = Blueprint('add_workers_blueprint', __name__)
 
 
 @workers_blueprint.route("/workers", methods=["get","post"])
-def workers():
+def show_workers():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
+    page = request.args.get('page', 1, type=int)
+    workers = session.query(Mitarbeiter).order_by(Mitarbeiter.MitarbeiterID).paginate(page, 2, error_out=False)
+
+    return render_template("workers.html", paginator=workers)
 
 
-
-    workers = session.query(Mitarbeiter).all()
-    return render_template("workers.html", workers = workers)
-@workers_blueprint.route("/addWorkersForm", methods=["get","post"])
+@add_workers_blueprint.route("/addWorkersForm", methods=["get","post"])
 def showAddForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
     addWorkersFormObject = addWorkersForm()
-    print("0")
 
     if addWorkersFormObject.validate_on_submit():
-        print("1")
         
         WorkerObjekt = Mitarbeiter()
         WorkerObjekt.Voname = addWorkersFormObject.Voname.data
@@ -33,13 +33,10 @@ def showAddForm():
         WorkerObjekt.Adresse = addWorkersFormObject.Adresse.data
         WorkerObjekt.Beschäftigung = addWorkersFormObject.Beschäftigung.data
         WorkerObjekt.Geburtsdatum = addWorkersFormObject.Geburtsdatum.data
-        print("2")  
         session.add(WorkerObjekt)
-        print("3")
         session.commit()
-        print("commited")
 
         redirect("/")
-        print("why?")
+
 
     return render_template("addWorkers.html",  form=addWorkersFormObject)

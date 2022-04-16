@@ -27,7 +27,7 @@
             ➕
           </td>
         </tr>
-        {%for worker in workers:%}
+        {%for worker in paginator.items:%}
           <tr>
             <td scope = "row">{{worker.MitarbeiterID}}</td>
             <td>{{worker.Voname}}</td>
@@ -52,15 +52,40 @@
                   </svg>
                 </button>
               </form>
-    
-             
             </td> 
-
           </tr>
         {%endfor%}
       </tbody>
     </table>
-    </div>
+        <a href="{{ url_for('workers_blueprint.show_workers', page=paginator.prev_num) }}"
+          class="btn btn-outline-dark 
+          {% if paginator.page == 1 %}disabled{% endif %}">
+            &laquo;
+        </a>
+        {% for page_num in paginator.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
+                {% if paginator.page == page_num %}
+                <a href="{{ url_for('workers_blueprint.show_workers', page=page_num) }}"
+                  class="btn btn-dark">
+                    {{ page_num }}
+                </a>
+                {% else %}
+                <a href="{{ url_for('workers_blueprint.show_workers', page=page_num) }}"
+                  class="btn btn-outline-dark">
+                    {{ page_num }}
+                </a>
+                {% endif %}
+            {% else %}
+                ...
+            {% endif %}
+        {% endfor %}    <a href="{{ url_for('workers_blueprint.show_workers', page=paginator.next_num) }}"
+          class="btn btn-outline-dark 
+          {% if paginator.page == paginator.pages %}disabled{% endif %}">
+            &raquo;
+        </a>
+      </div>
+      <p class="text-right mt-3">
+      Showing page {{ paginator.page }} of {{ paginator.pages }}
+      </p>
     </div>
     </div>
 {%endblock%}
