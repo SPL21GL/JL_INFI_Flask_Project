@@ -14,7 +14,7 @@ add_workers_blueprint = Blueprint('add_workers_blueprint', __name__)
 def show_workers():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
     page = request.args.get('page', 1, type=int)
-    workers = session.query(Mitarbeiter).order_by(Mitarbeiter.MitarbeiterID).paginate(page, 2, error_out=False)
+    workers = session.query(Mitarbeiter).order_by(Mitarbeiter.MitarbeiterID).paginate(page, ROWS_PER_PAGE, error_out=False)
 
     return render_template("workers.html", paginator=workers)
 

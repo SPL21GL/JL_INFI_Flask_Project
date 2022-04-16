@@ -5,18 +5,18 @@ import sqlalchemy
 from forms.AddForms.addCompartment import AddCompartmentForm
 from models import db, Abteilung
 
-
+ROWS_PER_PAGE = 5
 compartments_blueprint = Blueprint('compartments_blueprint', __name__)
 
 
 @compartments_blueprint.route("/compartments", methods=["get","post"])
-def compartment():
+def show_compartments():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
 
+    page = request.args.get('page', 1, type=int)
+    compartments = session.query(Abteilung).order_by(Abteilung.AbteilungsID).paginate(page, ROWS_PER_PAGE, error_out=False)
 
-
-    compartments = session.query(Abteilung).all()
-    return render_template("compartments.html", compartments = compartments)
+    return render_template("compartments.html", paginator = compartments)
 @compartments_blueprint.route("/addCompartmentsForm", methods=["get","post"])
 def showAddForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session

@@ -5,16 +5,16 @@ import sqlalchemy
 from forms.AddForms.addWorkgroupForm import AddWorkgroupsForm
 from models import Arbeitsgruppe, db
 
-
+ROWS_PER_PAGE = 5
 workgroups_blueprint = Blueprint('workgroups_blueprint', __name__)
 
 
 @workgroups_blueprint.route("/workgroups", methods=["get","post"])
-def workgroup():
+def show_workgroups():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
-
-    workgroups = session.query(Arbeitsgruppe).all()
-    return render_template("workgroups.html", workgroups = workgroups)
+    page = request.args.get('page', 1, type=int)
+    workgroups = session.query(Arbeitsgruppe).order_by(Arbeitsgruppe.ArbeitsgruppenID).paginate(page, ROWS_PER_PAGE, error_out=False)
+    return render_template("workgroups.html", paginator = workgroups)
 
 @workgroups_blueprint.route("/addWorkgroupsForm", methods=["get","post"])
 def showAddForm():

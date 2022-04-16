@@ -23,7 +23,7 @@
             ➕
           </td>
         </tr>
-        {%for compartment in compartments:%}
+        {%for compartment in paginator.items:%}
           <tr>
             <td scope = "row">{{compartment.AbteilungsID}}</td>
             <td>{{compartment.Name}}</td>
@@ -52,6 +52,35 @@
         {%endfor%}
       </tbody>
     </table>
+      <a href="{{ url_for('compartments_blueprint.show_compartments', page=paginator.prev_num) }}"
+      class="btn btn-outline-dark 
+        {% if paginator.page == 1 %}disabled{% endif %}">
+        &laquo;
+       </a>
+        {% for page_num in paginator.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}{% if page_num %}
+            {% if paginator.page == page_num %}
+            <a href="{{ url_for('compartments_blueprint.show_compartments', page=page_num) }}"
+              class="btn btn-dark">
+              {{ page_num }}
+            </a>
+            {% else %}
+            <a href="{{ url_for('compartments_blueprint.show_compartments', page=page_num) }}"
+              class="btn btn-outline-dark">
+              {{ page_num }}
+            </a>
+            {% endif %}
+              {% else %}
+                  ...
+              {% endif %}
+          {% endfor %}    <a href="{{ url_for('compartments_blueprint.show_compartments', page=paginator.next_num) }}"
+            class="btn btn-outline-dark 
+            {% if paginator.page == paginator.pages %}disabled{% endif %}">
+              &raquo;
+        </a>
+      </div>
+      <p class="text-right mt-3 ml-2">
+        Showing page {{ paginator.page }} of {{ paginator.pages }}
+      </p>
     </div>
     </div>
     </div>
