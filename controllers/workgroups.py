@@ -14,6 +14,7 @@ def show_workgroups():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
     page = request.args.get('page', 1, type=int)
     workgroups = session.query(Arbeitsgruppe).order_by(Arbeitsgruppe.ArbeitsgruppenID).paginate(page, ROWS_PER_PAGE, error_out=False)
+    
     return render_template("workgroups.html", paginator = workgroups)
 
 @workgroups_blueprint.route("/addWorkgroupsForm", methods=["get","post"])

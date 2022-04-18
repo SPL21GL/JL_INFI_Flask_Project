@@ -7,7 +7,6 @@ from forms.AddForms.addWorkersForm import addWorkersForm
 
 ROWS_PER_PAGE = 5
 workers_blueprint = Blueprint('workers_blueprint', __name__)
-add_workers_blueprint = Blueprint('add_workers_blueprint', __name__)
 
 
 @workers_blueprint.route("/workers", methods=["get","post"])
@@ -19,7 +18,7 @@ def show_workers():
     return render_template("workers.html", paginator=workers)
 
 
-@add_workers_blueprint.route("/addWorkersForm", methods=["get","post"])
+@workers_blueprint.route("/addWorkersForm", methods=["get","post"])
 def showAddForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
     addWorkersFormObject = addWorkersForm()
@@ -40,3 +39,7 @@ def showAddForm():
 
 
     return render_template("addWorkers.html",  form=addWorkersFormObject)
+
+@workers_blueprint.route("/editWorkersForm", methods=["get","post"])
+def submit_edit_workers():
+    session : sqlalchemy.orm.scoping.scoped_session = db.session
