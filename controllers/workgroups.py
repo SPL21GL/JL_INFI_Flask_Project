@@ -4,6 +4,7 @@ from sqlalchemy import update
 import sqlalchemy
 from forms.AddForms.addWorkgroupForm import AddWorkgroupsForm
 from forms.EditForms.editWorkgroupsForm import EditWorkgroupsForm
+from forms.DeleteForms.deleteWorkgroups import DeleteWorkgroupsForm
 from models import Arbeitsgruppe, db
 
 ROWS_PER_PAGE = 5
@@ -38,16 +39,16 @@ def showAddForm():
 @workgroups_blueprint.route("/workgroups/edit")
 def showEditForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
-    print("0")
+
     workgroup_id = request.args["workgroup_id"]
-    print("1")
+
     item_to_edit = session.query(Arbeitsgruppe).filter(Arbeitsgruppe.ArbeitsgruppenID == workgroup_id).first()
-    print("2")
+
     editWorkgroupFromObject = EditWorkgroupsForm()
     editWorkgroupFromObject.ArbeitsgruppenId.data = item_to_edit.ArbeitsgruppenID
     editWorkgroupFromObject.Name.data = item_to_edit.Name
     editWorkgroupFromObject.Raum.data = item_to_edit.Raum
-    print("3")
+
     return render_template("editWorkgroups.html", form = editWorkgroupFromObject)
 @workgroups_blueprint.route("/workgroups/edit",methods=["get","post"])
 def submitEditForm():
@@ -55,6 +56,7 @@ def submitEditForm():
     EditWorkgroupsFormObject = EditWorkgroupsForm()
 
     if EditWorkgroupsFormObject.validate_on_submit():
+
         workgroup_id = EditWorkgroupsFormObject.ArbeitsgruppenId.data
 
         item_to_edit = session.query(Arbeitsgruppe).filter(Arbeitsgruppe.ArbeitsgruppenID == workgroup_id).first()
@@ -66,5 +68,22 @@ def submitEditForm():
         return redirect("/workgroups")
     else:
         raise("Fatal Error")
+
+@workgroups_blueprint.route("/workgroups/delete", methods=["post"])
+def deleteWorkgroups():
+    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    deleteWorkgroupsFormObject = DeleteWorkgroupsForm()
+
+    if deleteWorkgroupsFormObject.validate_on_submit():
+        workgroup_to_delete_id = deleteWorkgroupsFormObject.ArbeitsgruppenID.data
+        print(workgroup_to_delete_id)
+        workgroup_to_delete = session.query(Arbeitsgruppe).filter(Arbeitsgruppe.ArbeitsgruppenID == workgroup_to_delete_id)
+        workgroup_to_delete.delete()
+        session.commit()
+        
+    else:
+        raise("Fatal Error")
+    
+    return redirect("/workgroups")
 
 

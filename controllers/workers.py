@@ -5,6 +5,7 @@ import sqlalchemy
 from forms.EditForms.editWorkersForm import EditWorkersForm
 from models import db, Mitarbeiter
 from forms.AddForms.addWorkersForm import addWorkersForm
+from forms.DeleteForms.deleteWorkers import DeleteWorkersForm
 
 ROWS_PER_PAGE = 5
 workers_blueprint = Blueprint('workers_blueprint', __name__)
@@ -79,3 +80,18 @@ def submitEditForm():
         return redirect("/workers")
     else:
         raise("Fatal Error")
+@workers_blueprint.route("/workers/delete", methods=["post"])
+def deleteWorkers():
+    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    deleteWorkersFormObject = DeleteWorkersForm()
+
+    if deleteWorkersFormObject.validate_on_submit():
+        worker_to_delete_id = deleteWorkersFormObject.MitarbeiterID.data
+        worker_to_delete = session.query(Mitarbeiter).filter(Mitarbeiter.MitarbeiterID == worker_to_delete_id)
+        worker_to_delete.delete()
+        session.commit()
+        
+    else:
+        raise("Fatal Error")
+    
+    return redirect("/workers")

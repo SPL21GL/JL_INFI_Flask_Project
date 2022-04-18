@@ -3,8 +3,9 @@ from flask import Blueprint, Flask, redirect, request, flash, session, render_te
 from sqlalchemy import update
 import sqlalchemy
 from forms.AddForms.addCompartment import AddCompartmentForm
+from forms.DeleteForms.deleteCompartments import DeleteCompartmentsForm
 from forms.EditForms.editCompartmentsForm import EditCompartmentsForm
-from models import db, Abteilung
+from models import Arbeitsgruppe, db, Abteilung
 
 ROWS_PER_PAGE = 5
 compartments_blueprint = Blueprint('compartments_blueprint', __name__)
@@ -66,3 +67,18 @@ def submitEditForm():
         return redirect("/compartments")
     else:
         raise("Fatal Error")
+@compartments_blueprint.route("/compartments/delete", methods=["post"])
+def deleteWorkgroups():
+    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    deleteCompartmentsFormObject = DeleteCompartmentsForm()
+
+    if deleteCompartmentsFormObject.validate_on_submit():
+        compartment_to_delete_id = deleteCompartmentsFormObject.AbteilungsID.data
+        compartment_to_delete = session.query(Abteilung).filter(Abteilung.AbteilungsID == compartment_to_delete_id)
+        compartment_to_delete.delete()
+        session.commit()
+        
+    else:
+        raise("Fatal Error")
+    
+    return redirect("/compartments")
