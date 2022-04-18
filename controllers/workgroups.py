@@ -3,6 +3,7 @@ from flask import Blueprint, Flask, redirect, request, flash, session, render_te
 from sqlalchemy import update
 import sqlalchemy
 from forms.AddForms.addWorkgroupForm import AddWorkgroupsForm
+from forms.EditForms.editWorkgroupsForm import EditWorkgroupsForm
 from models import Arbeitsgruppe, db
 
 ROWS_PER_PAGE = 5
@@ -21,10 +22,8 @@ def show_workgroups():
 def showAddForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
     addWorkgroupFormObject = AddWorkgroupsForm()
-    print("0")
 
     if addWorkgroupFormObject.validate_on_submit():
-        print("1")
         
         WorkgroupObjekt = Arbeitsgruppe()
         WorkgroupObjekt.Name = addWorkgroupFormObject.Name.data
@@ -36,3 +35,36 @@ def showAddForm():
         redirect("/")
 
     return render_template("addWorkgroups.html",  form=addWorkgroupFormObject)
+@workgroups_blueprint.route("/workgroups/edit")
+def showEditForm():
+    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    print("0")
+    workgroup_id = request.args["workgroup_id"]
+    print("1")
+    item_to_edit = session.query(Arbeitsgruppe).filter(Arbeitsgruppe.ArbeitsgruppenID == workgroup_id).first()
+    print("2")
+    editWorkgroupFromObject = EditWorkgroupsForm()
+    editWorkgroupFromObject.ArbeitsgruppenId.data = item_to_edit.ArbeitsgruppenID
+    editWorkgroupFromObject.Name.data = item_to_edit.Name
+    editWorkgroupFromObject.Raum.data = item_to_edit.Raum
+    print("3")
+    return render_template("editWorkgroups.html", form = editWorkgroupFromObject)
+@workgroups_blueprint.route("/workgroups/edit",methods=["get","post"])
+def submitEditForm():
+    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    EditWorkgroupsFormObject = EditWorkgroupsForm()
+
+    if EditWorkgroupsFormObject.validate_on_submit():
+        workgroup_id = EditWorkgroupsFormObject.ArbeitsgruppenId.data
+
+        item_to_edit = session.query(Arbeitsgruppe).filter(Arbeitsgruppe.ArbeitsgruppenID == workgroup_id).first()
+        item_to_edit.Name = EditWorkgroupsFormObject.Name.data
+        item_to_edit.Raum = EditWorkgroupsFormObject.Raum.data
+
+        session.commit()
+
+        return redirect("/workgroups")
+    else:
+        raise("Fatal Error")
+
+

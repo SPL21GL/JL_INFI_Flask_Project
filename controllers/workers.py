@@ -2,6 +2,7 @@ from flask import Flask
 from flask import Blueprint, Flask, redirect, request, flash, session, render_template
 from sqlalchemy import update
 import sqlalchemy
+from forms.EditForms.editWorkersForm import EditWorkersForm
 from models import db, Mitarbeiter
 from forms.AddForms.addWorkersForm import addWorkersForm
 
@@ -40,6 +41,41 @@ def showAddForm():
 
     return render_template("addWorkers.html",  form=addWorkersFormObject)
 
-@workers_blueprint.route("/editWorkersForm", methods=["get","post"])
-def submit_edit_workers():
+@workers_blueprint.route("/workers/edit")
+def showEditForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
+    
+    worker_id = request.args["worker_id"]
+    item_to_edit = session.query(Mitarbeiter).filter(Mitarbeiter.MitarbeiterID == worker_id).first()
+
+    editWorkerFromObject = EditWorkersForm()
+    editWorkerFromObject.MitarbeiterId.data = item_to_edit.MitarbeiterID
+    editWorkerFromObject.Voname.data = item_to_edit.Voname
+    editWorkerFromObject.Nachname.data = item_to_edit.Nachname
+    editWorkerFromObject.Lohn.data = item_to_edit.Lohn
+    editWorkerFromObject.Adresse.data = item_to_edit.Adresse
+    editWorkerFromObject.Beschäftigung.data = item_to_edit.Beschäftigung
+    editWorkerFromObject.Geburtsdatum.data = item_to_edit.Geburtsdatum
+    
+    return render_template("editWorkers.html", form = editWorkerFromObject)
+@workers_blueprint.route("/workers/edit",methods=["get","post"])
+def submitEditForm():
+    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    editWorkerFromObject = EditWorkersForm()
+
+    if editWorkerFromObject.validate_on_submit():
+        worker_id = editWorkerFromObject.MitarbeiterId.data
+
+        item_to_edit = session.query(Mitarbeiter).filter(Mitarbeiter.MitarbeiterID == worker_id).first()
+        item_to_edit.Voname = editWorkerFromObject.Voname.data
+        item_to_edit.Nachname = editWorkerFromObject.Nachname.data
+        item_to_edit.Lohn = editWorkerFromObject.Lohn.data
+        item_to_edit.Adresse = editWorkerFromObject.Adresse.data
+        item_to_edit.Beschäftigung = editWorkerFromObject.Beschäftigung.data
+        item_to_edit.Geburtsdatum = editWorkerFromObject.Geburtsdatum.data
+
+        session.commit()
+
+        return redirect("/workers")
+    else:
+        raise("Fatal Error")
