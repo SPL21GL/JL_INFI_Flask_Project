@@ -1,11 +1,9 @@
-from flask import Flask
-from flask import Blueprint, redirect, request, flash, session, render_template
-from sqlalchemy import update
+from flask import Blueprint, redirect, request, render_template
 import sqlalchemy
 from forms.AddForms.addCompartment import AddCompartmentForm
 from forms.DeleteForms.deleteCompartments import DeleteCompartmentsForm
 from forms.EditForms.editCompartmentsForm import EditCompartmentsForm
-from models import Arbeitsgruppe, db, Abteilung
+from models import db, Abteilung
 
 ROWS_PER_PAGE = 5
 compartments_blueprint = Blueprint('compartments_blueprint', __name__)
