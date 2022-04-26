@@ -2,7 +2,7 @@ from flask import Flask
 from controllers.index import index_blueprint
 from controllers.workers import workers_blueprint
 from controllers.compartments import compartments_blueprint 
-from controllers.workgroups import workgroups_blueprint 
+from controllers.workgroups import workgroups_blueprint
 from models import db
 from flask_wtf.csrf import CSRFProtect
 

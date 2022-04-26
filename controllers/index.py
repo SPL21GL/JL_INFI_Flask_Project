@@ -1,7 +1,4 @@
-from flask import Flask
-from flask import Blueprint, Flask, redirect, request, flash, session, render_template
-from sqlalchemy import update
-import sqlalchemy
+from flask import Blueprint,  render_template
 
 
 #from models import db  verfollständigen

@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import Blueprint, Flask, redirect, request, flash, session, render_template
+from flask import Blueprint, redirect, request, flash, session, render_template
 from sqlalchemy import update
 import sqlalchemy
 from forms.AddForms.addCompartment import AddCompartmentForm
@@ -22,20 +22,20 @@ def show_compartments():
 @compartments_blueprint.route("/addCompartmentsForm", methods=["get","post"])
 def showAddForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
-    addCompartmentFormObject = AddCompartmentForm()
+    add_compartment_form_object = AddCompartmentForm()
 
-    if addCompartmentFormObject.validate_on_submit():
+    if add_compartment_form_object.validate_on_submit():
         
-        CompartmentObjekt = Abteilung()
-        CompartmentObjekt.Name = addCompartmentFormObject.Name.data
-        CompartmentObjekt.Gebäude = addCompartmentFormObject.Gebäude.data
+        compartment_objekt = Abteilung()
+        compartment_objekt.Name = add_compartment_form_object.Name.data
+        compartment_objekt.Gebäude = add_compartment_form_object.Gebäude.data
 
-        session.add(CompartmentObjekt)
+        session.add(compartment_objekt)
         session.commit()
 
         redirect("/")
 
-    return render_template("addCompartment.html",  form=addCompartmentFormObject)
+    return render_template("addCompartment.html",  form=add_compartment_form_object)
 @compartments_blueprint.route("/compartments/edit")
 def showEditForm():
     session : sqlalchemy.orm.scoping.scoped_session = db.session
