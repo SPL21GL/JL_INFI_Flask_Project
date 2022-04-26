@@ -19,3 +19,5 @@ function deleteWorkgroup(button)
         button.form.submit(this)
     }
 }
+
+
