@@ -9,22 +9,21 @@ ROWS_PER_PAGE = 5
 workers_blueprint = Blueprint('workers_blueprint', __name__)
 
 
-@workers_blueprint.route("/workers", methods=["get","post"])
+@workers_blueprint.route("/workers", methods=["get", "post"])
 def show_workers():
-    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    session: sqlalchemy.orm.scoping.scoped_session = db.session
     page = request.args.get('page', 1, type=int)
-    workers = session.query(Mitarbeiter).order_by(Mitarbeiter.MitarbeiterID).paginate(page, ROWS_PER_PAGE, error_out=False)
+    workers = session.query(Mitarbeiter).order_by(Mitarbeiter.MitarbeiterID).paginate(
+        page, ROWS_PER_PAGE, error_out=False)
 
     return render_template("workers.html", paginator=workers)
 
 
-@workers_blueprint.route("/addWorkersForm", methods=["get","post"])
+@workers_blueprint.route("/addWorkersForm", methods=["get", "post"])
 def showAddForm():
-    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    session: sqlalchemy.orm.scoping.scoped_session = db.session
     addWorkersFormObject = addWorkersForm()
-
     if addWorkersFormObject.validate_on_submit():
-        
         WorkerObjekt = Mitarbeiter()
         WorkerObjekt.Voname = addWorkersFormObject.Voname.data
         WorkerObjekt.Nachname = addWorkersFormObject.Nachname.data
@@ -34,16 +33,13 @@ def showAddForm():
         WorkerObjekt.Geburtsdatum = addWorkersFormObject.Geburtsdatum.data
         session.add(WorkerObjekt)
         session.commit()
-
         redirect("/")
-
-
     return render_template("addWorkers.html",  form=addWorkersFormObject)
+
 
 @workers_blueprint.route("/workers/edit")
 def showEditForm():
-    session : sqlalchemy.orm.scoping.scoped_session = db.session
-    
+    session: sqlalchemy.orm.scoping.scoped_session = db.session
     worker_id = request.args["worker_id"]
     item_to_edit = session.query(Mitarbeiter).filter(Mitarbeiter.MitarbeiterID == worker_id).first()
 
@@ -55,17 +51,19 @@ def showEditForm():
     editWorkerFromObject.Adresse.data = item_to_edit.Adresse
     editWorkerFromObject.Beschäftigung.data = item_to_edit.Beschäftigung
     editWorkerFromObject.Geburtsdatum.data = item_to_edit.Geburtsdatum
-    
-    return render_template("editWorkers.html", form = editWorkerFromObject)
-@workers_blueprint.route("/workers/edit",methods=["get","post"])
+    return render_template("editWorkers.html", form=editWorkerFromObject)
+
+
+@workers_blueprint.route("/workers/edit", methods=["get", "post"])
 def submitEditForm():
-    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    session: sqlalchemy.orm.scoping.scoped_session = db.session
     editWorkerFromObject = EditWorkersForm()
 
     if editWorkerFromObject.validate_on_submit():
         worker_id = editWorkerFromObject.MitarbeiterId.data
 
-        item_to_edit = session.query(Mitarbeiter).filter(Mitarbeiter.MitarbeiterID == worker_id).first()
+        item_to_edit = session.query(Mitarbeiter).filter(
+            Mitarbeiter.MitarbeiterID == worker_id).first()
         item_to_edit.Voname = editWorkerFromObject.Voname.data
         item_to_edit.Nachname = editWorkerFromObject.Nachname.data
         item_to_edit.Lohn = editWorkerFromObject.Lohn.data
@@ -78,18 +76,19 @@ def submitEditForm():
         return redirect("/workers")
     else:
         raise("Fatal Error")
+
+
 @workers_blueprint.route("/workers/delete", methods=["post"])
 def deleteWorkers():
-    session : sqlalchemy.orm.scoping.scoped_session = db.session
+    session: sqlalchemy.orm.scoping.scoped_session = db.session
     deleteWorkersFormObject = DeleteWorkersForm()
 
     if deleteWorkersFormObject.validate_on_submit():
         worker_to_delete_id = deleteWorkersFormObject.MitarbeiterID.data
-        worker_to_delete = session.query(Mitarbeiter).filter(Mitarbeiter.MitarbeiterID == worker_to_delete_id)
+        worker_to_delete = session.query(Mitarbeiter).filter(
+            Mitarbeiter.MitarbeiterID == worker_to_delete_id)
         worker_to_delete.delete()
         session.commit()
-        
     else:
         raise("Fatal Error")
-    
     return redirect("/workers")
