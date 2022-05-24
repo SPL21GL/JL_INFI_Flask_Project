@@ -5,6 +5,7 @@ from wtforms.fields import DecimalField
 
 
 class EditWorkersForm(FlaskForm):
+    '# Defines the fields for edit workers form.'
     MitarbeiterId = HiddenField("WorkerId")
     Voname = StringField("Firstname")
     Nachname = StringField("Lastname")

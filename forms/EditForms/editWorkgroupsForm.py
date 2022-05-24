@@ -4,6 +4,7 @@ from wtforms.fields import DecimalField
 
 
 class EditWorkgroupsForm(FlaskForm):
+    '# Defines the fields for edit workgroups form.'
     ArbeitsgruppenId = HiddenField("WorkgroupId")
     Name = StringField("Name")
     Raum = DecimalField("Room")

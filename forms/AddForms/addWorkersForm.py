@@ -6,6 +6,7 @@ from wtforms import validators
 
 
 class addWorkersForm(FlaskForm):
+    '# Defines the fields for add workers form.'
     Voname = StringField("Firstname", validators=[validators.Length(
         3, 100), validators.input_required()])
     Nachname = StringField("Lastname", validators=[validators.Length(

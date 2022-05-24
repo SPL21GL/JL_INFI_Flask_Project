@@ -5,5 +5,6 @@ from wtforms import validators
 
 
 class AddCompartmentForm(FlaskForm):
+    '* Defines the fields for the add compartment form.'
     Name = StringField("Name", validators=[validators.Length(3, 100), validators.input_required()])
     Gebäude = DecimalField("Building", validators=[validators.input_required()])
