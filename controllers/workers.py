@@ -11,6 +11,7 @@ workers_blueprint = Blueprint('workers_blueprint', __name__)
 
 @workers_blueprint.route("/workers", methods=["get", "post"])
 def show_workers():
+    '# Shows all workers and pages them.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
     page = request.args.get('page', 1, type=int)
     workers = session.query(Mitarbeiter).order_by(Mitarbeiter.MitarbeiterID).paginate(
@@ -20,56 +21,59 @@ def show_workers():
 
 
 @workers_blueprint.route("/addWorkersForm", methods=["get", "post"])
-def showAddForm():
+def show_add_form():
+    '# Shows the form where you can add new workers and also adds them to the database.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
-    addWorkersFormObject = addWorkersForm()
-    if addWorkersFormObject.validate_on_submit():
-        WorkerObjekt = Mitarbeiter()
-        WorkerObjekt.Voname = addWorkersFormObject.Voname.data
-        WorkerObjekt.Nachname = addWorkersFormObject.Nachname.data
-        WorkerObjekt.Lohn = addWorkersFormObject.Lohn.data
-        WorkerObjekt.Adresse = addWorkersFormObject.Adresse.data
-        WorkerObjekt.Beschäftigung = addWorkersFormObject.Beschäftigung.data
-        WorkerObjekt.Geburtsdatum = addWorkersFormObject.Geburtsdatum.data
-        session.add(WorkerObjekt)
+    add_form_object = addWorkersForm()
+    if add_form_object.validate_on_submit():
+        worker_object = Mitarbeiter()
+        worker_object.Voname = add_form_object.Voname.data
+        worker_object.Nachname = add_form_object.Nachname.data
+        worker_object.Lohn = add_form_object.Lohn.data
+        worker_object.Adresse = add_form_object.Adresse.data
+        worker_object.Beschäftigung = add_form_object.Beschäftigung.data
+        worker_object.Geburtsdatum = add_form_object.Geburtsdatum.data
+        session.add(worker_object)
         session.commit()
         redirect("/")
-    return render_template("addWorkers.html",  form=addWorkersFormObject)
+    return render_template("addWorkers.html",  form=add_form_object)
 
 
 @workers_blueprint.route("/workers/edit")
-def showEditForm():
+def show_edit_form():
+    '# Shows the form where you can edit workers.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
     worker_id = request.args["worker_id"]
     item_to_edit = session.query(Mitarbeiter).filter(Mitarbeiter.MitarbeiterID == worker_id).first()
 
-    editWorkerFromObject = EditWorkersForm()
-    editWorkerFromObject.MitarbeiterId.data = item_to_edit.MitarbeiterID
-    editWorkerFromObject.Voname.data = item_to_edit.Voname
-    editWorkerFromObject.Nachname.data = item_to_edit.Nachname
-    editWorkerFromObject.Lohn.data = item_to_edit.Lohn
-    editWorkerFromObject.Adresse.data = item_to_edit.Adresse
-    editWorkerFromObject.Beschäftigung.data = item_to_edit.Beschäftigung
-    editWorkerFromObject.Geburtsdatum.data = item_to_edit.Geburtsdatum
-    return render_template("editWorkers.html", form=editWorkerFromObject)
+    edit_form_object = EditWorkersForm()
+    edit_form_object.MitarbeiterId.data = item_to_edit.MitarbeiterID
+    edit_form_object.Voname.data = item_to_edit.Voname
+    edit_form_object.Nachname.data = item_to_edit.Nachname
+    edit_form_object.Lohn.data = item_to_edit.Lohn
+    edit_form_object.Adresse.data = item_to_edit.Adresse
+    edit_form_object.Beschäftigung.data = item_to_edit.Beschäftigung
+    edit_form_object.Geburtsdatum.data = item_to_edit.Geburtsdatum
+    return render_template("editWorkers.html", form=edit_form_object)
 
 
 @workers_blueprint.route("/workers/edit", methods=["get", "post"])
-def submitEditForm():
+def submit_edit_form():
+    '# Updates changes to the workers in the database.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
-    editWorkerFromObject = EditWorkersForm()
+    edit_form_object = EditWorkersForm()
 
-    if editWorkerFromObject.validate_on_submit():
-        worker_id = editWorkerFromObject.MitarbeiterId.data
+    if edit_form_object.validate_on_submit():
+        worker_id = edit_form_object.MitarbeiterId.data
 
         item_to_edit = session.query(Mitarbeiter).filter(
             Mitarbeiter.MitarbeiterID == worker_id).first()
-        item_to_edit.Voname = editWorkerFromObject.Voname.data
-        item_to_edit.Nachname = editWorkerFromObject.Nachname.data
-        item_to_edit.Lohn = editWorkerFromObject.Lohn.data
-        item_to_edit.Adresse = editWorkerFromObject.Adresse.data
-        item_to_edit.Beschäftigung = editWorkerFromObject.Beschäftigung.data
-        item_to_edit.Geburtsdatum = editWorkerFromObject.Geburtsdatum.data
+        item_to_edit.Voname = edit_form_object.Voname.data
+        item_to_edit.Nachname = edit_form_object.Nachname.data
+        item_to_edit.Lohn = edit_form_object.Lohn.data
+        item_to_edit.Adresse = edit_form_object.Adresse.data
+        item_to_edit.Beschäftigung = edit_form_object.Beschäftigung.data
+        item_to_edit.Geburtsdatum = edit_form_object.Geburtsdatum.data
 
         session.commit()
 
@@ -79,12 +83,13 @@ def submitEditForm():
 
 
 @workers_blueprint.route("/workers/delete", methods=["post"])
-def deleteWorkers():
+def delete_workers():
+    '# Deletes worker out of database and then redirects to the overview.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
-    deleteWorkersFormObject = DeleteWorkersForm()
+    delete_form_object = DeleteWorkersForm()
 
-    if deleteWorkersFormObject.validate_on_submit():
-        worker_to_delete_id = deleteWorkersFormObject.MitarbeiterID.data
+    if delete_form_object.validate_on_submit():
+        worker_to_delete_id = delete_form_object.MitarbeiterID.data
         worker_to_delete = session.query(Mitarbeiter).filter(
             Mitarbeiter.MitarbeiterID == worker_to_delete_id)
         worker_to_delete.delete()

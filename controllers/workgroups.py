@@ -11,6 +11,7 @@ workgroups_blueprint = Blueprint('workgroups_blueprint', __name__)
 
 @workgroups_blueprint.route("/workgroups", methods=["get", "post"])
 def show_workgroups():
+    '# Shows all workgroups and pages them.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
     page = request.args.get('page', 1, type=int)
     workgroups = session.query(Arbeitsgruppe).order_by(
@@ -19,26 +20,28 @@ def show_workgroups():
 
 
 @workgroups_blueprint.route("/addWorkgroupsForm", methods=["get", "post"])
-def showAddForm():
+def show_add_form():
+    '# Shows the form where you can add workers.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
-    addWorkgroupFormObject = AddWorkgroupsForm()
+    add_form_object = AddWorkgroupsForm()
 
-    if addWorkgroupFormObject.validate_on_submit():
+    if add_form_object.validate_on_submit():
 
-        WorkgroupObjekt = Arbeitsgruppe()
-        WorkgroupObjekt.Name = addWorkgroupFormObject.Name.data
-        WorkgroupObjekt.Raum = addWorkgroupFormObject.Raum.data
+        workgroup_object = Arbeitsgruppe()
+        workgroup_object.Name = add_form_object.Name.data
+        workgroup_object.Raum = add_form_object.Raum.data
 
-        session.add(WorkgroupObjekt)
+        session.add(workgroup_object)
         session.commit()
 
         redirect("/")
 
-    return render_template("addWorkgroups.html",  form=addWorkgroupFormObject)
+    return render_template("addWorkgroups.html",  form=workgroup_object)
 
 
 @workgroups_blueprint.route("/workgroups/edit")
-def showEditForm():
+def show_edit_form():
+    '# Shows the form where you can edit workgroups.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
 
     workgroup_id = request.args["workgroup_id"]
@@ -46,27 +49,28 @@ def showEditForm():
     item_to_edit = session.query(Arbeitsgruppe).filter(
         Arbeitsgruppe.ArbeitsgruppenID == workgroup_id).first()
 
-    editWorkgroupFromObject = EditWorkgroupsForm()
-    editWorkgroupFromObject.ArbeitsgruppenId.data = item_to_edit.ArbeitsgruppenID
-    editWorkgroupFromObject.Name.data = item_to_edit.Name
-    editWorkgroupFromObject.Raum.data = item_to_edit.Raum
+    edit_form_object = EditWorkgroupsForm()
+    edit_form_object.ArbeitsgruppenId.data = item_to_edit.ArbeitsgruppenID
+    edit_form_object.Name.data = item_to_edit.Name
+    edit_form_object.Raum.data = item_to_edit.Raum
 
-    return render_template("editWorkgroups.html", form=editWorkgroupFromObject)
+    return render_template("editWorkgroups.html", form=edit_form_object)
 
 
 @workgroups_blueprint.route("/workgroups/edit", methods=["get", "post"])
-def submitEditForm():
+def submit_edit_form():
+    '# Updates changes to the workgroups in the database.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
-    EditWorkgroupsFormObject = EditWorkgroupsForm()
+    edit_form_object = EditWorkgroupsForm()
 
-    if EditWorkgroupsFormObject.validate_on_submit():
+    if edit_form_object.validate_on_submit():
 
-        workgroup_id = EditWorkgroupsFormObject.ArbeitsgruppenId.data
+        workgroup_id = edit_form_object.ArbeitsgruppenId.data
 
         item_to_edit = session.query(Arbeitsgruppe).filter(
             Arbeitsgruppe.ArbeitsgruppenID == workgroup_id).first()
-        item_to_edit.Name = EditWorkgroupsFormObject.Name.data
-        item_to_edit.Raum = EditWorkgroupsFormObject.Raum.data
+        item_to_edit.Name = edit_form_object.Name.data
+        item_to_edit.Raum = edit_form_object.Raum.data
 
         session.commit()
 
@@ -76,17 +80,16 @@ def submitEditForm():
 
 
 @workgroups_blueprint.route("/workgroups/delete", methods=["post"])
-def deleteWorkgroups():
+def delete_workgroups():
+    '# Deletes workgroups out of database and then redirects to the overview.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
-    deleteWorkgroupsFormObject = DeleteWorkgroupsForm()
+    delete_form_object = DeleteWorkgroupsForm()
 
-    if deleteWorkgroupsFormObject.validate_on_submit():
-        workgroup_to_delete_id = deleteWorkgroupsFormObject.ArbeitsgruppenID.data
+    if delete_form_object.validate_on_submit():
+        workgroup_to_delete_id = delete_form_object.ArbeitsgruppenID.data
         print(workgroup_to_delete_id)
         workgroup_to_delete = session.query(Arbeitsgruppe).filter(
             Arbeitsgruppe.ArbeitsgruppenID == workgroup_to_delete_id)
         workgroup_to_delete.delete()
         session.commit()
-    else:
-        raise("Fatal Error")
     return redirect("/workgroups")

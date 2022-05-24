@@ -11,6 +11,7 @@ compartments_blueprint = Blueprint('compartments_blueprint', __name__)
 
 @compartments_blueprint.route("/compartments", methods=["get", "post"])
 def show_compartments():
+    '# Shows all compartments and also pages them.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
 
     page = request.args.get('page', 1, type=int)
@@ -21,7 +22,8 @@ def show_compartments():
 
 
 @compartments_blueprint.route("/addCompartmentsForm", methods=["get", "post"])
-def showAddForm():
+def show_add_form():
+    '# Shows the form where you can add new compartments and also adds them to the database.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
     add_compartment_form_object = AddCompartmentForm()
 
@@ -39,48 +41,49 @@ def showAddForm():
 
 
 @compartments_blueprint.route("/compartments/edit")
-def showEditForm():
+def show_edit_form():
+    '# Shows the form where you can edit compartments and fills in the information.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
 
     compartment_id = request.args["compartment_id"]
 
     item_to_edit = session.query(Abteilung).filter(Abteilung.AbteilungsID == compartment_id).first()
 
-    editCompartmentsFormObject = EditCompartmentsForm()
-    editCompartmentsFormObject.AbteilungsId.data = item_to_edit.AbteilungsID
-    editCompartmentsFormObject.Name.data = item_to_edit.Name
-    editCompartmentsFormObject.Gebäude.data = item_to_edit.Gebäude
+    edit_form_object = EditCompartmentsForm()
+    edit_form_object.AbteilungsId.data = item_to_edit.AbteilungsID
+    edit_form_object.Name.data = item_to_edit.Name
+    edit_form_object.Gebäude.data = item_to_edit.Gebäude
 
-    return render_template("editCompartments.html", form=editCompartmentsFormObject)
+    return render_template("editCompartments.html", form=edit_form_object)
 
 
 @compartments_blueprint.route("/compartments/edit", methods=["get", "post"])
-def submitEditForm():
+def submit_edit_form():
+    '# Updates changes from the editform in the database.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
-    editCompartmentsFormObject = EditCompartmentsForm()
+    edit_form_object = EditCompartmentsForm()
 
-    if editCompartmentsFormObject.validate_on_submit():
-        compartment_id = editCompartmentsFormObject.AbteilungsId.data
+    if edit_form_object.validate_on_submit():
+        compartment_id = edit_form_object.AbteilungsId.data
 
         item_to_edit = session.query(Abteilung).filter(
             Abteilung.AbteilungsID == compartment_id).first()
-        item_to_edit.Name = editCompartmentsFormObject.Name.data
-        item_to_edit.Gebäude = editCompartmentsFormObject.Gebäude.data
+        item_to_edit.Name = edit_form_object.Name.data
+        item_to_edit.Gebäude = edit_form_object.Gebäude.data
 
         session.commit()
 
         return redirect("/compartments")
-    else:
-        raise("Fatal Error")
 
 
 @compartments_blueprint.route("/compartments/delete", methods=["post"])
-def deleteWorkgroups():
+def delete_compartments():
+    '# Deletes a compartment by ID and then redirects to the overview.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
-    deleteCompartmentsFormObject = DeleteCompartmentsForm()
+    delete_form_object = DeleteCompartmentsForm()
 
-    if deleteCompartmentsFormObject.validate_on_submit():
-        compartment_to_delete_id = deleteCompartmentsFormObject.AbteilungsID.data
+    if delete_form_object.validate_on_submit():
+        compartment_to_delete_id = delete_form_object.AbteilungsID.data
         compartment_to_delete = session.query(Abteilung).filter(
             Abteilung.AbteilungsID == compartment_to_delete_id)
         compartment_to_delete.delete()
