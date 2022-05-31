@@ -3,8 +3,10 @@ from controllers.index import index_blueprint
 from controllers.workers import workers_blueprint
 from controllers.compartments import compartments_blueprint
 from controllers.workgroups import workgroups_blueprint
+from controllers.login import login_blueprint
 from models import db
 from flask_wtf.csrf import CSRFProtect
+from flask_oidc import OpenIDConnect
 
 app = Flask(__name__)
 app.secret_key = "VerySecretSecretKey"
@@ -16,6 +18,7 @@ csrf = CSRFProtect()
 
 csrf.init_app(app)
 db.init_app(app)
+oidc = OpenIDConnect(app)
 
 
 app.register_blueprint(index_blueprint)
@@ -25,5 +28,7 @@ app.register_blueprint(workers_blueprint)
 app.register_blueprint(compartments_blueprint)
 
 app.register_blueprint(workgroups_blueprint)
+
+app.register_blueprint(login_blueprint)
 
 app.run()
