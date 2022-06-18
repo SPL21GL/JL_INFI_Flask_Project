@@ -3,8 +3,7 @@ from wtforms.fields.simple import StringField
 from wtforms.fields import DecimalField, SelectField
 from wtforms import validators
 
-choices = [("Shipped", "Shipped"), ("Resolved", "Resolved"), ("Cancelled", "Cancelled"),
-           ("On Hold", "On Hold"), ("Disputed", "Disputed"), ("In Process", "In Process")]
+choices = [("Support", "Support"), ("IT ", "IT "), ("Marketing", "Marketing")]
 
 
 class AddWorkgroupsForm(FlaskForm):
