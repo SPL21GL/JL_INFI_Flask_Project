@@ -62,12 +62,14 @@ def submit_edit_form():
     '# Updates changes to the workers in the database.'
     session: sqlalchemy.orm.scoping.scoped_session = db.session
     edit_form_object = EditWorkersForm()
+    print(edit_form_object.MitarbeiterId)
 
     if edit_form_object.validate_on_submit():
         worker_id = edit_form_object.MitarbeiterId.data
 
         item_to_edit = session.query(Mitarbeiter).filter(
             Mitarbeiter.MitarbeiterID == worker_id).first()
+        print(item_to_edit)
         item_to_edit.Voname = edit_form_object.Voname.data
         item_to_edit.Nachname = edit_form_object.Nachname.data
         item_to_edit.Lohn = edit_form_object.Lohn.data

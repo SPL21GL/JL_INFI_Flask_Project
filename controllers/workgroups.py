@@ -36,7 +36,7 @@ def show_add_form():
 
         redirect("/")
 
-    return render_template("addWorkgroups.html",  form=workgroup_object)
+    return render_template("addWorkgroups.html",  form=add_form_object)
 
 
 @workgroups_blueprint.route("/workgroups/edit")
