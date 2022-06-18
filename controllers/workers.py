@@ -33,7 +33,6 @@ def show_add_form():
         worker_object.Adresse = add_form_object.Adresse.data
         worker_object.Beschäftigung = add_form_object.Beschäftigung.data
         worker_object.Geburtsdatum = add_form_object.Geburtsdatum.data
-        worker_object.Arbeitergruppe = add_form_object.Arbeitergruppe.data
         session.add(worker_object)
         session.commit()
         redirect("/")

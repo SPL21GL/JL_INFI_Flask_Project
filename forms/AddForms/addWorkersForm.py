@@ -1,10 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms.fields.datetime import DateField
 from wtforms.fields.simple import StringField
-from wtforms.fields import DecimalField, SelectField
+from wtforms.fields import DecimalField
 from wtforms import validators
-
-choices = [("Website", "Website"), ("Product", "Product"), ("App Devolopment", "App Development")]
 
 
 class addWorkersForm(FlaskForm):
@@ -19,4 +17,3 @@ class addWorkersForm(FlaskForm):
     Beschäftigung = StringField("Employment", validators=[validators.Length(
         5, 30), validators.input_required()])
     Geburtsdatum = DateField("Birthday", [validators.input_required()])
-    Arbeitergruppe = SelectField("status", choices=choices)
