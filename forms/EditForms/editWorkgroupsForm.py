@@ -10,4 +10,4 @@ class EditWorkgroupsForm(FlaskForm):
     ArbeitsgruppenId = HiddenField("WorkgroupId")
     Name = StringField("Name")
     Raum = DecimalField("Room")
-    Abteilung = SelectField("status", choices=choices)
+    Abteilung = SelectField("Compartment", choices=choices)

@@ -34,3 +34,6 @@ create table if not exists Arbeitsgruppe_Mitarbeiter
 alter table Arbeitsgruppe_Mitarbeiter
 add constraint ArbeitsgruppenID FOREIGN KEY (ArbeitsgruppenID) REFERENCES Arbeitsgruppe(ArbeitsgruppenID),
 add constraint MitarbeiterID FOREIGN KEY (MitarbeiterID) REFERENCES Mitarbeiter(MitarbeiterID);
+
+alter table Arbeitsgruppe
+ADD Abteilung varchar(20);

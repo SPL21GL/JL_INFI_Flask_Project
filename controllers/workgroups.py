@@ -30,7 +30,8 @@ def show_add_form():
         workgroup_object = Arbeitsgruppe()
         workgroup_object.Name = add_form_object.Name.data
         workgroup_object.Raum = add_form_object.Raum.data
-        #workgroup_object.Abteilung = add_form_object.Abteilung.data
+        workgroup_object.Abteilung = request.form.get("Abteilung")  #add_form_object.Abteilung.data
+        print(workgroup_object.Abteilung)
 
         session.add(workgroup_object)
         session.commit()
@@ -55,8 +56,9 @@ def show_edit_form():
     edit_form_object.Name.data = item_to_edit.Name
     edit_form_object.Raum.data = item_to_edit.Raum
     edit_form_object.Abteilung.data = item_to_edit.Abteilung
-
-    return render_template("editWorkgroups.html", form=edit_form_object)
+    default = item_to_edit.Abteilung
+    #edit_form_object.process()
+    return render_template("editWorkgroups.html", form=edit_form_object, default=default)
 
 
 @workgroups_blueprint.route("/workgroups/edit", methods=["get", "post"])
@@ -73,6 +75,7 @@ def submit_edit_form():
             Arbeitsgruppe.ArbeitsgruppenID == workgroup_id).first()
         item_to_edit.Name = edit_form_object.Name.data
         item_to_edit.Raum = edit_form_object.Raum.data
+        item_to_edit.Abteilung = edit_form_object.Abteilung.data
 
         session.commit()
 

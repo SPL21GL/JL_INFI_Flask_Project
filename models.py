@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+
 class Abteilung(db.Model):
     __tablename__ = 'abteilung'
 
@@ -13,12 +14,15 @@ class Abteilung(db.Model):
     Gebäude = db.Column(db.Integer, nullable=False)
 
 
+
 class Arbeitsgruppe(db.Model):
     __tablename__ = 'arbeitsgruppe'
 
     ArbeitsgruppenID = db.Column(db.Integer, primary_key=True, unique=True)
     Name = db.Column(db.String(64), nullable=False)
     Raum = db.Column(db.Integer, nullable=False)
+    Abteilung = db.Column(db.String(20))
+
 
 
 class ArbeitsgruppeMitarbeiter(db.Model):
@@ -28,10 +32,9 @@ class ArbeitsgruppeMitarbeiter(db.Model):
     ArbeitsgruppenID = db.Column(db.ForeignKey('arbeitsgruppe.ArbeitsgruppenID'), index=True)
     MitarbeiterID = db.Column(db.ForeignKey('mitarbeiter.MitarbeiterID'), index=True)
 
-    arbeitsgruppe = db.relationship('Arbeitsgruppe', primaryjoin='ArbeitsgruppeMitarbeiter.\
-        ArbeitsgruppenID == Arbeitsgruppe.ArbeitsgruppenID', backref='arbeitsgruppe_mitarbeiters')
-    mitarbeiter = db.relationship('Mitarbeiter', primaryjoin='ArbeitsgruppeMitarbeiter.\
-        MitarbeiterID == Mitarbeiter.MitarbeiterID', backref='arbeitsgruppe_mitarbeiters')
+    arbeitsgruppe = db.relationship('Arbeitsgruppe', primaryjoin='ArbeitsgruppeMitarbeiter.ArbeitsgruppenID == Arbeitsgruppe.ArbeitsgruppenID', backref='arbeitsgruppe_mitarbeiters')
+    mitarbeiter = db.relationship('Mitarbeiter', primaryjoin='ArbeitsgruppeMitarbeiter.MitarbeiterID == Mitarbeiter.MitarbeiterID', backref='arbeitsgruppe_mitarbeiters')
+
 
 
 class Mitarbeiter(db.Model):
